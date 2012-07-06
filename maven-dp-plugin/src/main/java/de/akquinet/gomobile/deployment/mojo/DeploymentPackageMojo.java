@@ -4,13 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.License;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,7 +36,7 @@ public class DeploymentPackageMojo extends AbstractMojo {
 
     private static final String DP_FILE_EXTENSION = ".dp";
 
-    private static final String PLUGIN_NAME = "de.akquinet.gomobile:maven-dp-plugin - 0.9.0-SNAPSHOT";
+    private static final String PLUGIN_NAME = "de.akquinet.gomobile:maven-dp-plugin - 1.0.1-SNAPSHOT";
 
     /**
      * The directory for the generated bundles.
@@ -107,6 +110,15 @@ public class DeploymentPackageMojo extends AbstractMojo {
      * @parameter property="writeExtraData"
      */
     private boolean m_writeExtraData = true;
+    
+    /**
+     * Flag that indicates if the resulting deployment-package
+     * should contain the project dependencies.
+     * Only bundles are considered.
+     * 
+     * @parameter property="includeDependencies"
+     */
+    private boolean m_includeDependencies = true;
 
     /**
      * @component
@@ -156,6 +168,13 @@ public class DeploymentPackageMojo extends AbstractMojo {
         if (deploymentPackageInfo == null) {
             throw new MojoExecutionException("No deployment package described");
         }
+        
+        // add project dependencies
+        if (m_includeDependencies)
+        	addDependencies(deploymentPackageInfo);
+        
+        // add inherited headers
+        addHeaders(deploymentPackageInfo);
 
         DeploymentPackage currentPackage = deploymentPackageInfo
                 .getDeploymentPackage();
@@ -171,12 +190,12 @@ public class DeploymentPackageMojo extends AbstractMojo {
         // Resolve all resources.
         for (BundleResource br : deploymentPackageInfo.getBundleResources()) {
             br.setMojo(this);
-            br.resolve(currentPackage);
+            br.resolve(currentPackage, getBaseDir());
         }
 
         for (ProcessedResource pr : deploymentPackageInfo
                 .getProcessedResources()) {
-            pr.resolve(currentPackage);
+            pr.resolve(currentPackage, getBaseDir());
         }
 
         // Check...
@@ -215,7 +234,60 @@ public class DeploymentPackageMojo extends AbstractMojo {
 
     }
 
-    private void populate(DeploymentPackage currentPackage) throws IOException {
+    private void addHeaders(DeploymentPackageMetadata dpInfo) {
+		List<Header> headers = dpInfo.getHeaders();
+		for (BundleResource bres : dpInfo.getBundleResources()) {
+			for (Header header : headers) {
+				bres.getHeaders().add(header.clone());
+			}
+		}
+	}
+
+	/**
+     * Plugin configuration have been performed before calling this method
+     * 
+     * @param dpInfo current deployment package configuration
+     */
+    private void addDependencies(DeploymentPackageMetadata dpInfo) {
+    	List dependencies = m_project.getDependencies();
+    	if (dependencies != null) {
+    		for (Object depObj : dependencies) {
+    			if (!(depObj instanceof Dependency))
+    				continue;
+    			
+    			Dependency dep = (Dependency) depObj;
+    			if (!dep.getType().equals("jar")) //TODO should detect if it is not a bundle
+    				continue;
+    			
+    			String groupId = dep.getGroupId();
+    			String artifactId = dep.getArtifactId();
+    			String version = dep.getVersion();
+    			
+    			BundleResource bres = getDefinedDPResource(groupId, artifactId, dpInfo);
+    			if (bres == null) {
+    				bres = new BundleResource();
+    				dpInfo.getResources().add(bres);
+    			}
+    			
+    			bres.setGroupId(groupId);
+    			bres.setArtifactId(artifactId);
+    			bres.setVersion(version);
+    			bres.setTargetPath("bundles");
+    		}
+    	}
+	}
+
+	private BundleResource getDefinedDPResource(String groupId, String artifactId, DeploymentPackageMetadata dpInfo) {
+		for (BundleResource bres : dpInfo.getBundleResources()) {
+			if (bres.getGroupId().equals(groupId) && bres.getArtifactId().equals(artifactId)) {
+				return bres;
+			}
+		}
+		
+		return null;
+	}
+
+	private void populate(DeploymentPackage currentPackage) throws IOException {
         Maven2OsgiConverter converter = new Maven2OsgiConverter();
         if (currentPackage.getSymbolicName() == null) {
             currentPackage.setSymbolicName(converter
@@ -412,6 +484,16 @@ public class DeploymentPackageMojo extends AbstractMojo {
     public final boolean isWriteExtraData() {
         return m_writeExtraData;
     }
+    
+    /**
+     * @return <CODE>TRUE</CODE> if project dependencies should be included into the
+     *         deployment package file, else <CODE>FALSE></CODE>. Default is
+     *         <CODE>TRUE</CODE>.
+     * @see net.sourceforge.osgi.deployment.maven.IDeploymentPluginContext#isWriteExtraData()
+     */
+    public final boolean isIncludeDependencies() {
+        return m_includeDependencies;
+    }
 
     /**
      * @param p_baseDir the baseDir to set
@@ -517,6 +599,13 @@ public class DeploymentPackageMojo extends AbstractMojo {
     public final void setWriteExtraData(final boolean p_writeExtraData) {
         m_writeExtraData = p_writeExtraData;
     }
+    
+    /**
+     * @param p_includeDependencies the includeDependencies to set
+     */
+    public final void setIncludeDependencies(final boolean p_includeDependencies) {
+        m_includeDependencies = p_includeDependencies;
+    }
 
     /**
      * This method resolves an artifact on all available repositories and
@@ -533,14 +622,37 @@ public class DeploymentPackageMojo extends AbstractMojo {
             throws MojoExecutionException {
         try {
             
+        	if (artifactId == null)
+        		throw new MojoExecutionException("artifactId of artifact " + groupId + "::" + version + " must be defined");
+        	if (groupId == null)
+        		throw new MojoExecutionException("grouId of artifact :" + artifactId + ":" + version + " must be defined");
+        	
+            String resolvedVersion = version;
+            if (version == null) {
+            	List dependencies = m_project.getDependencies();
+            	if (dependencies != null) {
+            		for (Object depObj : dependencies) {
+            			if (!(depObj instanceof Dependency))
+            				continue;
+            			
+            			Dependency dep = (Dependency) depObj;
+            			if (!groupId.equals(dep.getGroupId()) ||
+            					!artifactId.equals(dep.getArtifactId()))
+            				continue;
+            			
+            			resolvedVersion = dep.getVersion();
+            		}
+            	}
+            }
+            
             Artifact artifact = null;
-            if (classifier == null) {            
-                artifact = getArtifactFactory()
-                    .createArtifact(groupId, artifactId, version,
+            if (classifier == null) { 
+            	artifact = getArtifactFactory()
+                    .createArtifact(groupId, artifactId, resolvedVersion,
                             Artifact.SCOPE_RUNTIME, "jar");
             } else {
                 artifact = getArtifactFactory()
-                    .createArtifactWithClassifier(groupId, artifactId, version,
+                    .createArtifactWithClassifier(groupId, artifactId, resolvedVersion,
                         "jar", classifier);
             }
             

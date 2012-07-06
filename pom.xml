@@ -4,7 +4,7 @@
   <groupId>de.akquinet.gomobile</groupId>
   <artifactId>deployment-admin-reactor</artifactId>
   <name>deployment-admin-reactor</name>
-  <version>0.9.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <description>akquinet OSGi Deployment admin implementation and tools</description>
@@ -141,10 +141,10 @@
   <modules>
     <module>deployment-package-api</module>
     <module>maven-dp-plugin</module>
-    <module>maven-dp-plugin-it</module>
+    <!--module>maven-dp-plugin-it</module-->
     <module>deployment-admin-impl</module>
     <module>autoconf-resource-processor</module>
-    <module>deployment-admin-it</module>
+    <!--module>deployment-admin-it</module-->
   </modules>
 
 

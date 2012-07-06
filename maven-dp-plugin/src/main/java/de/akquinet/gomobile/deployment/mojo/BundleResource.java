@@ -1,10 +1,19 @@
 package de.akquinet.gomobile.deployment.mojo;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
 import de.akquinet.gomobile.deployment.api.DeploymentPackage;
+import de.akquinet.gomobile.deployment.api.internals.Store;
+import de.akquinet.gomobile.deployment.api.internals.StreamUtils;
+import de.akquinet.gomobile.deployment.mojo.util.FileUtil;
+import de.akquinet.gomobile.deployment.mojo.util.ManifestBuilder;
 
 /**
  * <p>
@@ -35,6 +44,11 @@ public class BundleResource implements Resource {
     private de.akquinet.gomobile.deployment.api.BundleResource m_bundle;
 
     private DeploymentPackageMojo m_mojo;
+    
+    /**
+     * The header entries.
+     */
+    private List<Header> m_headerEntries = null;
 
     /**
      * Constructor which initializes the instance of the {@link BundleResource}.
@@ -45,6 +59,7 @@ public class BundleResource implements Resource {
         m_version = null;
         m_targetPath = null;
         m_mojo = null;
+        m_headerEntries = new ArrayList<Header>();
 
         m_bundle = new de.akquinet.gomobile.deployment.api.BundleResource();
     }
@@ -53,19 +68,54 @@ public class BundleResource implements Resource {
         m_mojo = mojo;
     }
 
-    public void resolve(DeploymentPackage dp) throws MojoExecutionException {
+    public void resolve(DeploymentPackage dp, File baseDir) throws MojoExecutionException {
         if (m_resolvedFile == null) {
             m_resolvedFile = m_mojo.resolveResource(m_groupId, m_artifactId,
                     m_version, m_classifier);
-
             try {
                 m_bundle.setURL(m_resolvedFile.toURI().toURL());
             } catch (Exception e) {
                 throw new MojoExecutionException(
                         "Cannot compute the bundle url : " + e.getMessage());
             }
-
         }
+        
+        final List<Header> addedHeaders = getHeaders();
+		if ((addedHeaders != null) && (!addedHeaders.isEmpty())) {
+			try {
+				// modify manifest file to add header values
+				JarFile bundleFile = new JarFile(m_resolvedFile);
+				Manifest manifest = bundleFile.getManifest();
+				ManifestBuilder mfBuilder = new ManifestBuilder();
+				for (Header header : addedHeaders) {
+					if (!(header instanceof BundleHeader))
+						continue;
+					
+					mfBuilder.addHeader((BundleHeader) header);
+				}
+
+				// modify manifest
+				Manifest manipulatedMf = mfBuilder.build(manifest);
+				File manipulatedMfFile = File.createTempFile("mf_", ".mf");
+				FileOutputStream mfFos = new FileOutputStream(manipulatedMfFile);
+				manipulatedMf.write(mfFos);
+				mfFos.flush();
+				mfFos.close();
+
+				File manipulatedBundleFile = File.createTempFile("bundle_",
+						".jar");
+				if (manipulatedBundleFile == null)
+					throw new MojoExecutionException("Cannot create temp file");
+
+				FileUtil.copyBundleFile(bundleFile, manipulatedBundleFile,
+						manipulatedMfFile);
+
+				m_bundle.setURL(manipulatedBundleFile.toURI().toURL());
+			} catch (Exception e) {
+				throw new MojoExecutionException(
+						"Cannot manipulate manifest file of the original bundle url : " + e.getMessage());
+			}
+		}
 
         String resourceId = m_resolvedFile.getName();
         if (m_targetPath != null && m_targetPath.length() > 0) {
@@ -176,6 +226,21 @@ public class BundleResource implements Resource {
      */
     public final void setVersion(final String version) {
         m_version = version;
+    }
+    
+    /**
+     * @return the header entries
+     */
+    public final List<Header> getHeaders() {
+        return m_headerEntries;
+    }
+    
+    /**
+     * @param resources the resources to set
+     */
+    public final void setHeaders(final List<Header> headerEntries) {
+        // Not processed yet...
+        m_headerEntries = headerEntries;
     }
 
     /**

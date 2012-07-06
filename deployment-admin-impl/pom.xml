@@ -6,13 +6,14 @@
   <parent>
     <groupId>de.akquinet.gomobile</groupId>
     <artifactId>deployment-admin-reactor</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
+	<relativePath>../</relativePath>
   </parent>
 
   <packaging>bundle</packaging>
   <name>Deployment Admin (akquinet)</name>
   <groupId>de.akquinet.gomobile</groupId>
-  <version>0.9.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <artifactId>deployment-admin-impl</artifactId>
   <dependencies>
     <dependency>

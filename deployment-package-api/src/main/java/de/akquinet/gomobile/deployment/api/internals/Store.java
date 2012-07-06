@@ -60,6 +60,10 @@ public class Store {
     public URI getLocation(Handle handle) throws IOException {
         return getLocation(handle.getSHA1()).toURI();
     }
+    
+    public File getFile(Handle handle) throws IOException {
+        return getLocation(handle.getSHA1());
+    }
 
     private File getLocation(String id) {
         return new File(dir, "dp_" + id + ".bin");

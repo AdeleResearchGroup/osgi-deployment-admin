@@ -5,13 +5,14 @@
   <parent>
     <groupId>de.akquinet.gomobile</groupId>
     <artifactId>deployment-admin-reactor</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
+	<relativePath>../</relativePath>
   </parent>
 
   <groupId>de.akquinet.gomobile</groupId>
   <artifactId>maven-dp-plugin-it</artifactId>
   <name>maven-dp-plugin-it</name>
-  <version>0.9.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
@@ -26,7 +27,7 @@
     <dependency>
       <groupId>de.akquinet.gomobile</groupId>
       <artifactId>deployment-package-api</artifactId>
-      <version>${project.version}</version>
+      <version>1.0.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
