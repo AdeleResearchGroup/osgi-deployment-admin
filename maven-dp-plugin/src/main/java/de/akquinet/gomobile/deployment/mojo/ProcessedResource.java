@@ -81,8 +81,8 @@ public class ProcessedResource implements Resource {
         m_resource.setProcessor(processor);
     }
 
-    public void resolve(DeploymentPackage dp) throws MojoExecutionException {
-        File f = new File(m_filePath);
+    public void resolve(DeploymentPackage dp, File baseDir) throws MojoExecutionException {
+        File f = new File(baseDir, m_filePath);
         String n = f.getName();
 
         try {

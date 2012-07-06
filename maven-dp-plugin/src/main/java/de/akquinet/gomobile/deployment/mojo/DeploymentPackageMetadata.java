@@ -29,6 +29,11 @@ public class DeploymentPackageMetadata {
      * The resources.
      */
     private List<Resource> m_resources = null;
+    
+    /**
+     * The header entries.
+     */
+    private List<Header> m_headerEntries = null;
 
     /**
      * A constructor which initializes an instance of a
@@ -37,6 +42,7 @@ public class DeploymentPackageMetadata {
     public DeploymentPackageMetadata() {
         m_resources = new ArrayList<Resource>();
         m_package = new DeploymentPackage();
+        m_headerEntries = new ArrayList<Header>();
     }
 
     /**
@@ -210,6 +216,13 @@ public class DeploymentPackageMetadata {
     public final List<Resource> getResources() {
         return m_resources;
     }
+    
+    /**
+     * @return the header entries
+     */
+    public final List<Header> getHeaders() {
+        return m_headerEntries;
+    }
 
     /**
      * @param resources the resources to set
@@ -217,6 +230,14 @@ public class DeploymentPackageMetadata {
     public final void setResources(final List<Resource> resources) {
         // Not processed yet...
         m_resources = resources;
+    }
+    
+    /**
+     * @param resources the resources to set
+     */
+    public final void setHeaders(final List<Header> headerEntries) {
+        // Not processed yet...
+        m_headerEntries = headerEntries;
     }
 
     /**
