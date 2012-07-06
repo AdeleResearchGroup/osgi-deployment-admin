@@ -1,5 +1,7 @@
 package de.akquinet.gomobile.deployment.mojo;
 
+import java.io.File;
+
 import org.apache.maven.plugin.MojoExecutionException;
 
 import de.akquinet.gomobile.deployment.api.DeploymentPackage;
@@ -19,5 +21,5 @@ public interface Resource {
 
   Object getResource();
 
-  void resolve(DeploymentPackage dp) throws MojoExecutionException;
+  void resolve(DeploymentPackage dp, File baseDir) throws MojoExecutionException;
 }

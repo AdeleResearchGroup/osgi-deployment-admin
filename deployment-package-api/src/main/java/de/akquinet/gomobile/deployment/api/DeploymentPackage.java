@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -425,7 +426,7 @@ public class DeploymentPackage {
             // Start file bundles
             for (BundleResource br : bundles) {
                 if (!br.isMissing()) {
-                    copy(br.getName(), br.getInputStream(), jarOut);
+                	  copy(br.getName(), br.getInputStream(), jarOut);
                 }
             }
 
