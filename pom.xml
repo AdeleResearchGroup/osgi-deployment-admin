@@ -162,9 +162,9 @@
   </distributionManagement>
 
   <scm>
-     <connection>scm:git:ssh://git@github.com:AdeleResearchGroup/osgi-deployment-admin.git</connection>
+     <connection>scm:git:ssh://git@github.com/AdeleResearchGroup/osgi-deployment-admin.git</connection>
      <url>https://github.com/AdeleResearchGroup/osgi-deployment-admin</url>
-     <developerConnection>scm:git:ssh://git@github.com:AdeleResearchGroup/osgi-deployment-admin.git</developerConnection>
+     <developerConnection>scm:git:ssh://git@github.com/AdeleResearchGroup/osgi-deployment-admin.git</developerConnection>
      <tag>HEAD</tag>
   </scm>
 </project>
