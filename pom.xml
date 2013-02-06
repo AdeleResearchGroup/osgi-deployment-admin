@@ -23,11 +23,11 @@
     </license>
   </licenses>
 
-  <parent>
+<!--  <parent>
     <groupId>org.sonatype.oss</groupId>
     <artifactId>oss-parent</artifactId>
     <version>5</version>
-  </parent>
+  </parent>-->
 
   <build>
     <plugins>
@@ -147,46 +147,18 @@
     <!--module>deployment-admin-it</module-->
   </modules>
 
+  <distributionManagement>
+     <repository>
+        <id>cloudbees-adele-release</id>
+        <name>Cloudbees Adele Repository</name>
+        <url>dav:https://repository-icasa.forge.cloudbees.com/release</url>
+     </repository>
+  </distributionManagement>
 
-  <profiles>
-    <profile>
-      <id>ats.nexus</id>
-      <distributionManagement>
-        <repository>
-          <id>${repo.releases.id}</id>
-          <name>${repo.releases.name}</name>
-          <url>${repo.releases.url}</url>
-          <uniqueVersion>false</uniqueVersion>
-        </repository>
-
-        <snapshotRepository>
-          <id>${repo.snapshots.id}</id>
-          <name>${repo.snapshots.name}</name>
-          <url>${repo.snapshots.url}</url>
-          <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-      </distributionManagement>
-    </profile>
-
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  <scm>
+     <connection>scm:git:ssh://git@github.com:AdeleResearchGroup/osgi-deployment-admin.git</connection>
+     <url>https://github.com/AdeleResearchGroup/osgi-deployment-admin</url>
+     <developerConnection>scm:git:ssh://git@github.com:AdeleResearchGroup/osgi-deployment-admin.git</developerConnection>
+     <tag>HEAD</tag>
+  </scm>
 </project>
