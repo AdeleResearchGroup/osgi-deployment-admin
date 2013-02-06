@@ -5,14 +5,14 @@
   <parent>
     <groupId>de.akquinet.gomobile</groupId>
     <artifactId>deployment-admin-reactor</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
 	<relativePath>../</relativePath>
   </parent>
 
   <packaging>bundle</packaging>
   <name>AutoConf Resource Processor (akquinet)</name>
   <groupId>de.akquinet.gomobile</groupId>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <artifactId>autoconf-resource-processor</artifactId>
   <dependencies>
     <dependency>
