@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>de.akquinet.gomobile</groupId>
     <artifactId>deployment-admin-reactor</artifactId>
     <version>1.0.2-SNAPSHOT</version>
-	<relativePath>../</relativePath>
+    <relativePath>../</relativePath>
   </parent>
 
   <packaging>bundle</packaging>
@@ -35,18 +36,18 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>de.akquinet.gomobile.deploymentadmin
-                        </Bundle-SymbolicName>
+            </Bundle-SymbolicName>
             <Bundle-Name>akquinet Deployment Admin
-                        </Bundle-Name>
+            </Bundle-Name>
             <Bundle-Description>A bundle that implements the
               Deployment Admin.
-                  </Bundle-Description>
+            </Bundle-Description>
             <Bundle-Vendor>akquinet A.G.</Bundle-Vendor>
             <Private-Package>de.akquinet.gomobile.deploymentadmin.*
-                        </Private-Package>
+            </Private-Package>
             <Export-Package>org.osgi.service.deploymentadmin.*;version="1.1",
-                org.osgi.service.event;version=1.2.0
-                        </Export-Package>
+              org.osgi.service.event;version=1.3.0
+            </Export-Package>
           </instructions>
         </configuration>
       </plugin>
