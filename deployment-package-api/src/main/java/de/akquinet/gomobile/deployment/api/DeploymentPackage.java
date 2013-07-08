@@ -334,11 +334,10 @@ public class DeploymentPackage {
 //                throw new CheckingException("Section name '" + res.getName() + "' is not a valid path");
 //            }
 
-            if (res.getProcessor() == null) { // 114.3.4.9
-                throw new CheckingException(Constants.RESOURCE_PROCESSOR + " is missing for '" + res.getName() + "'");
-            }
+            //Removed getProcessor checking. It should be optional
 
-            if (! Checker.checkPID(res.getProcessor())) { // 114.3.4.9
+            //Check only if optional processor exists.
+            if (res.getProcessor()!= null && !Checker.checkPID(res.getProcessor())) { // 114.3.4.9
                 throw new CheckingException(res.getProcessor() + "'" + res.getProcessor() + "' is not a valid pid");
             }
         }

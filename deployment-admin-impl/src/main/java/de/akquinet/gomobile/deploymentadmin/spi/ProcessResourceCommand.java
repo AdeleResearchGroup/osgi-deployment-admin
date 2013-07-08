@@ -92,9 +92,7 @@ public class ProcessResourceCommand extends Command {
                     //    throw new DeploymentException(DeploymentException.CODE_FOREIGN_CUSTOMIZER, "Resource processor for resource '" + name + "' belongs to foreign deployment package");
                    // }
                 }
-                else {
-                    throw new DeploymentException(DeploymentException.CODE_PROCESSOR_NOT_FOUND, "No resource processor for resource: '" + name + "'");
-                }
+                //Resource Processor should be optional.
             }
         }
         catch (IOException e) {
