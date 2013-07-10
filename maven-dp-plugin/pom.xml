@@ -6,13 +6,13 @@
   <parent>
     <groupId>de.akquinet.gomobile</groupId>
     <artifactId>deployment-admin-reactor</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
 	<relativePath>../</relativePath>
   </parent>
 
   <groupId>de.akquinet.gomobile</groupId>
   <artifactId>maven-dp-plugin</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3-SNAPSHOT</version>
 
   <name>akquinet OSGi Deployment Package Maven Plugin</name>
   <description>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>de.akquinet.gomobile</groupId>
       <artifactId>deployment-package-api</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
