@@ -219,25 +219,34 @@ public abstract class AbstractDeploymentPackage implements DeploymentPackage {
         if (isStale()) {
             throw new IllegalStateException("Can not get bundle from stale deployment package.");
         }
+        String processor = getResourceProcessorName(resource);
+        if (processor != null) {
+            try {
+                ServiceReference[] services = m_bundleContext.getServiceReferences(ResourceProcessor.class.getName(), "(" + org.osgi.framework.Constants.SERVICE_PID + "=" + processor + ")");
+            if (services != null && services.length > 0) {
+                return services[0];
+            }
+            else {
+                return null;
+            }
+
+        }catch (InvalidSyntaxException e) {
+            return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the processor pid
+     * @param resource the resource name.
+     * @return the resource processor pid
+     */
+    public String getResourceProcessorName(String resource){
         AbstractInfo info = (AbstractInfo) m_pathToEntry.get(resource);
         if (info instanceof ResourceInfoImpl) {
             String processor = ((ResourceInfoImpl) info).getResourceProcessor();
-            if (processor != null) {
-                try {
-                    ServiceReference[] services = m_bundleContext.getServiceReferences(ResourceProcessor.class.getName(), "(" + org.osgi.framework.Constants.SERVICE_PID + "=" + processor + ")");
-                    if (services != null && services.length > 0) {
-                        return services[0];
-                    }
-                    else {
-                        return null;
-                    }
-
-                }
-                catch (InvalidSyntaxException e) {
-                    // TODO: log this
-                    return null;
-                }
-            }
+            return processor;
         }
         return null;
     }

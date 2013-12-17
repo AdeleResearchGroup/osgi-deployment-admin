@@ -61,9 +61,9 @@ public class ProcessResourceCommand extends Command {
                 if (resourceInfo == null) {
                     throw new DeploymentException(DeploymentException.CODE_OTHER_ERROR, "Resource '" + name + "' is not described in the manifest.");
                 }
-
+                String resourceName = source.getResourceProcessorName(name);
                 ServiceReference ref = source.getResourceProcessor(name);
-                if (ref != null) {
+                if (ref != null) { //resource processor found.
                     String serviceOwnerSymName = ref.getBundle().getSymbolicName();
                     //TODO Check if the processor is a customizer from another DP.
                     //if (source.getBundleInfoByName(serviceOwnerSymName) != null) {
@@ -91,8 +91,9 @@ public class ProcessResourceCommand extends Command {
                     //else {
                     //    throw new DeploymentException(DeploymentException.CODE_FOREIGN_CUSTOMIZER, "Resource processor for resource '" + name + "' belongs to foreign deployment package");
                    // }
+                } else if (resourceName != null){ // resource processor defined, but not found.
+                    throw new DeploymentException(DeploymentException.CODE_PROCESSOR_NOT_FOUND, "No resource processor for resource: '" + name + "'");
                 }
-                //Resource Processor should be optional.
             }
         }
         catch (IOException e) {
