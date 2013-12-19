@@ -91,8 +91,8 @@ public class ProcessResourceCommand extends Command {
                     //else {
                     //    throw new DeploymentException(DeploymentException.CODE_FOREIGN_CUSTOMIZER, "Resource processor for resource '" + name + "' belongs to foreign deployment package");
                    // }
-                } else if (resourceName != null){ // resource processor defined, but not found.
-                    throw new DeploymentException(DeploymentException.CODE_PROCESSOR_NOT_FOUND, "No resource processor for resource: '" + name + "'");
+                } else if (resourceName != null && resourceName.compareToIgnoreCase("null") != 0){ // resource processor defined, but not found.
+                    throw new DeploymentException(DeploymentException.CODE_PROCESSOR_NOT_FOUND, "No resource processor "+ resourceName + " for resource: " + name);
                 }
             }
         }
