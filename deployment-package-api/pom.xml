@@ -4,13 +4,13 @@
   <parent>
     <groupId>de.akquinet.gomobile</groupId>
     <artifactId>deployment-admin-reactor</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.4</version>
 	<relativePath>../</relativePath>
   </parent>
 
   <groupId>de.akquinet.gomobile</groupId>
   <artifactId>deployment-package-api</artifactId>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.4</version>
 
   <name>Deployment-Package-API</name>
   <description>API to create Deployment Packages</description>
