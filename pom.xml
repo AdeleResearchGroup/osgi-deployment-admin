@@ -154,7 +154,7 @@
 
   <distributionManagement>
      <repository>
-        <id>cloudbees-adele-release</id>
+        <id>icasa-deploy-cloudbees-release</id>
         <name>Cloudbees Adele Repository</name>
         <url>dav:https://repository-icasa.forge.cloudbees.com/release</url>
      </repository>
